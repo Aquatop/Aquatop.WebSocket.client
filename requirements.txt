@@ -1,0 +1,4 @@
+asyncio
+python-socketio[asyncio_client]
+python-socketio[client]
+requests
