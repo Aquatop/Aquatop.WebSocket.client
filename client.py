@@ -7,10 +7,20 @@ RESPONSE = {
         'ph': '9.9',
         'waterLevel': '99%',
         'temperature': '99°C',
-    }}
+    }
+}
+RESPONSE_2 = {
+    'params': {'name': AQUARIUM_NAME},
+    'body': {}
+}
 
 
 sio = socketio.Client()
+
+
+@sio.on('connect', namespace='/aquarium')
+def aquarium_connect():
+    sio.emit('CLIENT_INFO', RESPONSE_2, namespace="/aquarium")
 
 
 @sio.on('connect', namespace='/monitoring')
@@ -29,5 +39,5 @@ def disconnect():
     print('disconnected from server')
 
 
-sio.connect('http://localhost:3333', namespaces=['/monitoring'])
+sio.connect('http://localhost:3333', namespaces=['/monitoring', '/aquarium'])
 sio.wait()
