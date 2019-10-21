@@ -23,6 +23,12 @@ def aquarium_connect():
     sio.emit('CLIENT_INFO', RESPONSE_2, namespace="/aquarium")
 
 
+@sio.on('DISPLAY_PIN', namespace='/aquarium')
+def display_pin(data):
+    if(AQUARIUM_NAME == data['aquarium']):
+        print('PIN: ', data['pin'])
+
+
 @sio.on('connect', namespace='/monitoring')
 def monitoring_connect():
     sio.emit('CLIENT_INFO', RESPONSE, namespace="/monitoring")
