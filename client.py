@@ -1,14 +1,15 @@
 import socketio
 
 AQUARIUM_NAME = 'AQUARIO_DU_LERMEN'
-RESPONSE = {
-    'params': {'name': AQUARIUM_NAME},
-    'body': {
-        'ph': '9.9',
-        'waterLevel': '99%',
-        'temperature': '99°C',
-    }
-}
+
+# RESPONSE = {
+#     'params': {'name': AQUARIUM_NAME},
+#     'body': {
+#         'ph': '9.9',
+#         'waterLevel': '99%',
+#         'temperature': '99°C',
+#     }
+# }
 RESPONSE_2 = {
     'params': {'name': AQUARIUM_NAME},
     'body': {}
@@ -31,12 +32,26 @@ def display_pin(data):
 
 @sio.on('connect', namespace='/monitoring')
 def monitoring_connect():
+    file = open('aquario1.txt', 'r')
+    RESPONSE = {'params': {'name': AQUARIUM_NAME}}
+    RESPONSE['body'] = eval(file.read())
+    file.close()
+
+    print(RESPONSE)
+
     sio.emit('CLIENT_INFO', RESPONSE, namespace="/monitoring")
 
 
 @sio.on('REQUEST_REPORT', namespace='/monitoring')
 def respond_report(data):
     if(AQUARIUM_NAME == data['aquarium']):
+        file = open('aquario1.txt', 'r')
+        RESPONSE = {'params': {'name': AQUARIUM_NAME}}
+        RESPONSE['body'] = eval(file.read())
+        file.close()
+
+        print(RESPONSE)
+
         sio.emit('RESPOND_REPORT', RESPONSE, namespace='/monitoring')
 
 
@@ -45,5 +60,6 @@ def disconnect():
     print('disconnected from server')
 
 
-sio.connect('http://localhost:3333', namespaces=['/monitoring', '/aquarium'])
+sio.connect('https://testarasp.serveo.net',
+            namespaces=['/monitoring', '/aquarium'])
 sio.wait()
