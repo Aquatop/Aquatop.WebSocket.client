@@ -19,6 +19,29 @@ RESPONSE_2 = {
 sio = socketio.Client()
 
 
+@sio.on('connect', namespace='/scheduling')
+def scheduling_connect():
+    sio.emit('CLIENT_INFO', RESPONSE_2, namespace="/scheduling")
+
+
+@sio.on('REQUEST_FEED_FISHES', namespace='/scheduling')
+def feed_fishes(data):
+    if(AQUARIUM_NAME == data['aquarium']):
+        print('FEEDIND FISHES')
+
+
+@sio.on('REQUEST_TURN_ON_LIGHTS', namespace='/scheduling')
+def turn_on_lights(data):
+    if(AQUARIUM_NAME == data['aquarium']):
+        print('TURNING ON LIGHTS')
+
+
+@sio.on('REQUEST_TURN_OFF_LIGHTS', namespace='/scheduling')
+def turn_off_lights(data):
+    if(AQUARIUM_NAME == data['aquarium']):
+        print('TURNING OFF LIGHTS')
+
+
 @sio.on('connect', namespace='/aquarium')
 def aquarium_connect():
     sio.emit('CLIENT_INFO', RESPONSE_2, namespace="/aquarium")
@@ -60,6 +83,6 @@ def disconnect():
     print('disconnected from server')
 
 
-sio.connect('https://testarasp.serveo.net',
-            namespaces=['/monitoring', '/aquarium'])
+sio.connect('http://localhost:8080', socketio_path='/websocket-server',
+            namespaces=['/monitoring', '/aquarium', '/scheduling'])
 sio.wait()
