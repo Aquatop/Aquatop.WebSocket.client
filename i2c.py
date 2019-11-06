@@ -19,7 +19,7 @@ if __name__ == "__main__":
     other_response = 0
 
     while(user_input != 0):
-        user_input = input('Qual ação deseja realizar? ')
+        user_input = int(input('Qual ação deseja realizar? '))
 
         bus.write_byte_data(slave_addr, 0, user_input)
         sleep(1.5)
