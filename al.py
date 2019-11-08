@@ -31,15 +31,81 @@ passosPorRotacao = 512
 
 
 def gira_fuso1():
-    pass
+    for i in range(7, 0, -1):
+        setOutputFuso1(i)
+        time.sleep(VEL_MOTOR/1000000.0)
 
 
 def gira_fuso2():
-    pass
+    for i in range(7, 0, -1):
+        setOutputFuso2(i)
+        time.sleep(VEL_MOTOR/1000000.0)
+
+
+def setOutput(out):
+    var1 = ((SEQUENCIA[out]) & 0x01)
+    var2 = ((SEQUENCIA[out] >> 1) & 0x01)
+    var3 = ((SEQUENCIA[out] >> 2) & 0x01)
+    var4 = ((SEQUENCIA[out] >> 3) & 0x01)
+
+    wiringpi.digitalWrite(IN1, var1)
+    wiringpi.digitalWrite(IN2, var2)
+    wiringpi.digitalWrite(IN3, var3)
+    wiringpi.digitalWrite(IN4, var4)
+
+
+def setOutputFuso1(out):
+    var1 = ((SEQUENCIA[out]) & 0x01)
+    var2 = ((SEQUENCIA[out] >> 1) & 0x01)
+    var3 = ((SEQUENCIA[out] >> 2) & 0x01)
+    var4 = ((SEQUENCIA[out] >> 3) & 0x01)
+
+    wiringpi.digitalWrite(FS11, var1)
+    wiringpi.digitalWrite(FS12, var2)
+    wiringpi.digitalWrite(FS13, var3)
+    wiringpi.digitalWrite(FS14, var4)
+
+
+def setOutputFuso2(out):
+    var1 = ((SEQUENCIA[out]) & 0x01)
+    var2 = ((SEQUENCIA[out] >> 1) & 0x01)
+    var3 = ((SEQUENCIA[out] >> 2) & 0x01)
+    var4 = ((SEQUENCIA[out] >> 3) & 0x01)
+
+    wiringpi.digitalWrite(FS21, var1)
+    wiringpi.digitalWrite(FS22, var2)
+    wiringpi.digitalWrite(FS23, var3)
+    wiringpi.digitalWrite(FS24, var4)
 
 
 def alimentar():
-    print('Alimentando')
+    if(number_aqua == 1):
+        while(wiringpi.digitalRead(FDC1) != 0):
+            sentidoHorario()
+            conta += 1
+        while(conta >= 0):
+            sentidoAntiHorario()
+            conta -= 1
+    elif(number_aqua == 2):
+        while(wiringpi.digitalRead(FDC2) != 0):
+            sentidoAntiHorario()
+            conta += 1
+        while(conta >= 0):
+            sentidoHorario()
+            conta -= 1
+    elif(number_aqua == 3):
+        while(wiringpi.digitalRead(FDC1) != 0):
+            sentidoHorario()
+            conta += 1
+        while(conta >= 0):
+            sentidoAntiHorario()
+            conta -= 1
+        while(wiringpi.digitalRead(FDC2) != 0):
+            sentidoAntiHorario()
+            conta += 1
+        while(conta >= 0):
+            sentidoHorario()
+            conta -= 1
 
 
 def fuso():
