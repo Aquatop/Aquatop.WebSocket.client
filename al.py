@@ -90,7 +90,7 @@ def setOutputFuso2(out):
     wiringpi.digitalWrite(FS24, var4)
 
 
-def alimentar():
+def alimentar(conta):
     if(number_aqua == 1):
         while(wiringpi.digitalRead(FDC1) != 0):
             sentidoHorario()
@@ -120,7 +120,7 @@ def alimentar():
             conta -= 1
 
 
-def fuso():
+def fuso(conta):
     if(number_tip1 == 1 and number_tip2 == 0):
         if(number_aqua == 1 or number_aqua == 2):
             while(conta > 0 and conta <= 2*passosPorRotacao):
@@ -181,12 +181,12 @@ number_tip1 = int(input("Qual ração 1, 2 do aquario 1? "))
 if(number_aqua == 3):
     number_tip2 = int(input("Qual ração 1, 2 do aquario 2? "))
 
-thread1 = threading.Thread(target=alimentar)
+thread1 = threading.Thread(target=alimentar, args=[conta])
 thread1.start()
 
 time.sleep(1)
 
-thread2 = threading.Thread(target=fuso)
+thread2 = threading.Thread(target=fuso, args=[conta])
 thread2.start()
 
 thread1.join()
