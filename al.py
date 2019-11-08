@@ -30,6 +30,18 @@ number_tip2 = 0
 passosPorRotacao = 512
 
 
+def sentidoHorario():
+    for i in range(7, 0, -1):
+        setOutput(i)
+        time.sleep(VEL_MOTOR/1000000.0)
+
+
+def sentidoAntiHorario():
+    for i in range(0, 8, 1):
+        setOutput(i)
+        time.sleep(VEL_MOTOR/1000000.0)
+
+
 def gira_fuso1():
     for i in range(7, 0, -1):
         setOutputFuso1(i)
