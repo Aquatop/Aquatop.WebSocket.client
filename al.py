@@ -23,6 +23,12 @@ FDC2 = 25
 VEL_MOTOR = 1048
 SEQUENCIA = [0x08, 0x0C, 0x04, 0x06, 0x02, 0x03, 0x01, 0x09]
 
+conta = 0
+number_aqua = 0
+number_tip1 = 0
+number_tip2 = 0
+passosPorRotacao = 512
+
 
 def sentidoHorario():
     for i in range(7, 0, -1):
@@ -147,50 +153,43 @@ def fuso():
                 gira_fuso2()
 
 
-if __name__ == "__main__":
-    conta = 0
-    number_aqua = 0
-    number_tip1 = 0
-    number_tip2 = 0
-    passosPorRotacao = 512
+wiringpi.wiringPiSetup()
 
-    wiringpi.wiringPiSetup()
+wiringpi.pinMode(FDC1, wiringpi.INPUT)
+wiringpi.pinMode(FDC2, wiringpi.INPUT)
+wiringpi.pullUpDnControl(FDC1, wiringpi.PUD_DOWN)
+wiringpi.pullUpDnControl(FDC2, wiringpi.PUD_DOWN)
 
-    wiringpi.pinMode(FDC1, wiringpi.INPUT)
-    wiringpi.pinMode(FDC2, wiringpi.INPUT)
-    wiringpi.pullUpDnControl(FDC1, wiringpi.PUD_DOWN)
-    wiringpi.pullUpDnControl(FDC2, wiringpi.PUD_DOWN)
+wiringpi.pinMode(IN1, wiringpi.OUTPUT)
+wiringpi.pinMode(IN2, wiringpi.OUTPUT)
+wiringpi.pinMode(IN3, wiringpi.OUTPUT)
+wiringpi.pinMode(IN4, wiringpi.OUTPUT)
 
-    wiringpi.pinMode(IN1, wiringpi.OUTPUT)
-    wiringpi.pinMode(IN2, wiringpi.OUTPUT)
-    wiringpi.pinMode(IN3, wiringpi.OUTPUT)
-    wiringpi.pinMode(IN4, wiringpi.OUTPUT)
+wiringpi.pinMode(FS11, wiringpi.OUTPUT)
+wiringpi.pinMode(FS12, wiringpi.OUTPUT)
+wiringpi.pinMode(FS13, wiringpi.OUTPUT)
+wiringpi.pinMode(FS14, wiringpi.OUTPUT)
 
-    wiringpi.pinMode(FS11, wiringpi.OUTPUT)
-    wiringpi.pinMode(FS12, wiringpi.OUTPUT)
-    wiringpi.pinMode(FS13, wiringpi.OUTPUT)
-    wiringpi.pinMode(FS14, wiringpi.OUTPUT)
+wiringpi.pinMode(FS21, wiringpi.OUTPUT)
+wiringpi.pinMode(FS22, wiringpi.OUTPUT)
+wiringpi.pinMode(FS23, wiringpi.OUTPUT)
+wiringpi.pinMode(FS24, wiringpi.OUTPUT)
 
-    wiringpi.pinMode(FS21, wiringpi.OUTPUT)
-    wiringpi.pinMode(FS22, wiringpi.OUTPUT)
-    wiringpi.pinMode(FS23, wiringpi.OUTPUT)
-    wiringpi.pinMode(FS24, wiringpi.OUTPUT)
+number_aqua = int(input("Qual aquario alimentar 1, 2 ou os dois(3)? "))
+number_tip1 = int(input("Qual ração 1, 2 do aquario 1? "))
 
-    number_aqua = int(input("Qual aquario alimentar 1, 2 ou os dois(3)? "))
-    number_tip1 = int(input("Qual ração 1, 2 do aquario 1? "))
+if(number_aqua == 3):
+    number_tip2 = int(input("Qual ração 1, 2 do aquario 2? "))
 
-    if(number_aqua == 3):
-        number_tip2 = int(input("Qual ração 1, 2 do aquario 2? "))
+thread1 = threading.Thread(target=alimentar)
+thread1.start()
 
-    thread1 = threading.Thread(target=alimentar)
-    thread1.start()
+time.sleep(1)
 
-    time.sleep(1)
+thread2 = threading.Thread(target=fuso)
+thread2.start()
 
-    thread2 = threading.Thread(target=fuso)
-    thread2.start()
+thread1.join()
 
-    thread1.join()
-
-    print('Aquario alimentado: ', number_aqua)
-    print('Ração fornecida: ', number_tip1)
+print('Aquario alimentado: ', number_aqua)
+print('Ração fornecida: ', number_tip1)
