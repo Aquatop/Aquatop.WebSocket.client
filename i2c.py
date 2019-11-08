@@ -1,3 +1,4 @@
+import wiringpi
 from smbus2 import SMBus
 from time import sleep
 
@@ -10,13 +11,16 @@ INPUT = {
 }
 
 if __name__ == "__main__":
-    bus = SMBus(1)
-
     slave_addr = 0x0F
     user_input = 1
     payload = 0
     response = 0
     other_response = 0
+    bomba2 = 7
+
+    bus = SMBus(1)
+    wiringpi.wiringPiSetup()
+    wiringpi.pinMode(bomba2, wiringpi.OUTPUT)
 
     while(user_input != 0):
         user_input = int(input('Qual ação deseja realizar? '))
@@ -47,6 +51,7 @@ if __name__ == "__main__":
                 sleep(1.5)
 
                 payload = 3
+                wiringpi.digitalWrite(bomba2, 1)
 
                 bus.write_byte_data(slave_addr, 0, payload)
                 sleep(1.5)
@@ -59,6 +64,7 @@ if __name__ == "__main__":
                     sleep(1.5)
 
                 payload = 11
+                wiringpi.digitalWrite(bomba2, 0)
 
                 bus.write_byte_data(slave_addr, 0, payload)
                 sleep(1.5)

@@ -23,12 +23,6 @@ FDC2 = 25
 VEL_MOTOR = 1048
 SEQUENCIA = [0x08, 0x0C, 0x04, 0x06, 0x02, 0x03, 0x01, 0x09]
 
-conta = 0
-number_aqua = 0
-number_tip1 = 0
-number_tip2 = 0
-passosPorRotacao = 512
-
 
 def sentidoHorario():
     for i in range(7, 0, -1):
@@ -154,6 +148,12 @@ def fuso():
 
 
 if __name__ == "__main__":
+    conta = 0
+    number_aqua = 0
+    number_tip1 = 0
+    number_tip2 = 0
+    passosPorRotacao = 512
+
     wiringpi.wiringPiSetup()
 
     wiringpi.pinMode(FDC1, wiringpi.INPUT)
