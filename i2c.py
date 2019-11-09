@@ -25,9 +25,9 @@ if __name__ == "__main__":
     while(user_input != 0):
         user_input = int(input('Qual ação deseja realizar? '))
 
-        bus.write_byte_data(slave_addr, 0, user_input)
-        sleep(1.5)
-        response = bus.read_byte_data(slave_addr, 0)
+        bus.write_byte(slave_addr, user_input)
+        sleep(0.2)
+        response = bus.read_byte(slave_addr)
 
         print(INPUT[user_input], response)
 
@@ -35,38 +35,38 @@ if __name__ == "__main__":
             if(response == 10):
                 payload = 3
 
-                bus.write_byte_data(slave_addr, 0, payload)
-                sleep(1.5)
-                other_response = bus.read_byte_data(slave_addr, 0)
+                bus.write_byte(slave_addr, payload)
+                sleep(1)
+                other_response = bus.read_byte(slave_addr)
 
                 while(other_response < 20):
-                    bus.write_byte_data(slave_addr, 0, payload)
-                    sleep(1.5)
-                    other_response = bus.read_byte_data(slave_addr, 0)
-                    sleep(1.5)
+                    bus.write_byte(slave_addr, payload)
+                    sleep(1)
+                    other_response = bus.read_byte(slave_addr)
+                    sleep(1)
 
                 payload = 10
 
-                bus.write_byte_data(slave_addr, 0, payload)
-                sleep(1.5)
+                bus.write_byte(slave_addr, payload)
+                sleep(1)
 
                 payload = 3
                 wiringpi.digitalWrite(bomba2, 1)
 
-                bus.write_byte_data(slave_addr, 0, payload)
-                sleep(1.5)
-                other_response = bus.read_byte_data(slave_addr, 0)
+                bus.write_byte(slave_addr, payload)
+                sleep(1)
+                other_response = bus.read_byte(slave_addr)
 
                 while(other_response > 8):
-                    bus.write_byte_data(slave_addr, 0, payload)
-                    sleep(1.5)
-                    other_response = bus.read_byte_data(slave_addr, 0)
-                    sleep(1.5)
+                    bus.write_byte(slave_addr, payload)
+                    sleep(1)
+                    other_response = bus.read_byte(slave_addr)
+                    sleep(1)
 
                 payload = 11
                 wiringpi.digitalWrite(bomba2, 0)
 
-                bus.write_byte_data(slave_addr, 0, payload)
-                sleep(1.5)
+                bus.write_byte(slave_addr, payload)
+                sleep(1)
 
     bus.close()
