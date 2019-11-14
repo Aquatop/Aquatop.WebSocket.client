@@ -23,11 +23,7 @@ FDC2 = 25
 VEL_MOTOR = 1048
 SEQUENCIA = [0x08, 0x0C, 0x04, 0x06, 0x02, 0x03, 0x01, 0x09]
 
-conta = 0
-number_aqua = 0
-number_tip1 = 0
-number_tip2 = 0
-passosPorRotacao = 512
+PASSOS_POR_ROTACAO = 512
 
 
 def sentidoHorario():
@@ -90,7 +86,7 @@ def setOutputFuso2(out):
     wiringpi.digitalWrite(FS24, var4)
 
 
-def alimentar(conta):
+def alimentar(conta, number_aqua):
     if(number_aqua == 1):
         while(wiringpi.digitalRead(FDC1) != 0):
             sentidoHorario()
@@ -105,91 +101,57 @@ def alimentar(conta):
         while(conta >= 0):
             sentidoHorario()
             conta -= 1
-    elif(number_aqua == 3):
-        while(wiringpi.digitalRead(FDC1) != 0):
-            sentidoHorario()
-            conta += 1
-        while(conta >= 0):
-            sentidoAntiHorario()
-            conta -= 1
-        while(wiringpi.digitalRead(FDC2) != 0):
-            sentidoAntiHorario()
-            conta += 1
-        while(conta >= 0):
-            sentidoHorario()
-            conta -= 1
 
 
-def fuso(conta):
-    if(number_tip1 == 1 and number_tip2 == 0):
-        if(number_aqua == 1 or number_aqua == 2):
-            while(conta > 0 and conta <= 2*passosPorRotacao):
-                pass
-            while(conta >= 2*passosPorRotacao and conta <= 4*passosPorRotacao):
-                gira_fuso1()
-    elif(number_tip1 == 2 and number_tip2 == 0):
-        if(number_aqua == 1 or number_aqua == 2):
-            while(conta > 0 and conta <= 2*passosPorRotacao):
-                pass
-            while(conta >= 2*passosPorRotacao and conta <= 4*passosPorRotacao):
-                gira_fuso2()
-    elif(number_aqua == 3):
-        while(conta > 0 and conta <= 2*passosPorRotacao):
+def fuso(conta, number_aqua):
+    if number_aqua == 1:
+        while(conta > 0 and conta <= 2 * PASSOS_POR_ROTACAO):
             pass
-        while(conta >= 2*passosPorRotacao and conta <= 4*passosPorRotacao):
-            if(number_tip1 == 1):
-                gira_fuso1()
-            if(number_tip1 == 2):
-                gira_fuso2()
-        while(conta != 0):
+        while(conta >= 2 * PASSOS_POR_ROTACAO and conta <= 4 * PASSOS_POR_ROTACAO):
+            gira_fuso1()
+    else:
+        while(conta > 0 and conta <= 2 * PASSOS_POR_ROTACAO):
             pass
-        time.sleep(1)
-        while(conta > 0 and conta <= 2*passosPorRotacao):
-            pass
-        while(conta >= 2*passosPorRotacao and conta <= 4*passosPorRotacao):
-            if(number_tip2 == 1):
-                gira_fuso1()
-            if(number_tip2 == 2):
-                gira_fuso2()
+        while(conta >= 2 * PASSOS_POR_ROTACAO and conta <= 4 * PASSOS_POR_ROTACAO):
+            gira_fuso2()
 
 
-wiringpi.wiringPiSetup()
+def feed_fishes(number_aqua):
+    wiringpi.wiringPiSetup()
 
-wiringpi.pinMode(FDC1, wiringpi.INPUT)
-wiringpi.pinMode(FDC2, wiringpi.INPUT)
-wiringpi.pullUpDnControl(FDC1, wiringpi.PUD_DOWN)
-wiringpi.pullUpDnControl(FDC2, wiringpi.PUD_DOWN)
+    wiringpi.pinMode(FDC1, wiringpi.INPUT)
+    wiringpi.pinMode(FDC2, wiringpi.INPUT)
+    wiringpi.pullUpDnControl(FDC1, wiringpi.PUD_DOWN)
+    wiringpi.pullUpDnControl(FDC2, wiringpi.PUD_DOWN)
 
-wiringpi.pinMode(IN1, wiringpi.OUTPUT)
-wiringpi.pinMode(IN2, wiringpi.OUTPUT)
-wiringpi.pinMode(IN3, wiringpi.OUTPUT)
-wiringpi.pinMode(IN4, wiringpi.OUTPUT)
+    wiringpi.pinMode(IN1, wiringpi.OUTPUT)
+    wiringpi.pinMode(IN2, wiringpi.OUTPUT)
+    wiringpi.pinMode(IN3, wiringpi.OUTPUT)
+    wiringpi.pinMode(IN4, wiringpi.OUTPUT)
 
-wiringpi.pinMode(FS11, wiringpi.OUTPUT)
-wiringpi.pinMode(FS12, wiringpi.OUTPUT)
-wiringpi.pinMode(FS13, wiringpi.OUTPUT)
-wiringpi.pinMode(FS14, wiringpi.OUTPUT)
+    wiringpi.pinMode(FS11, wiringpi.OUTPUT)
+    wiringpi.pinMode(FS12, wiringpi.OUTPUT)
+    wiringpi.pinMode(FS13, wiringpi.OUTPUT)
+    wiringpi.pinMode(FS14, wiringpi.OUTPUT)
 
-wiringpi.pinMode(FS21, wiringpi.OUTPUT)
-wiringpi.pinMode(FS22, wiringpi.OUTPUT)
-wiringpi.pinMode(FS23, wiringpi.OUTPUT)
-wiringpi.pinMode(FS24, wiringpi.OUTPUT)
+    wiringpi.pinMode(FS21, wiringpi.OUTPUT)
+    wiringpi.pinMode(FS22, wiringpi.OUTPUT)
+    wiringpi.pinMode(FS23, wiringpi.OUTPUT)
+    wiringpi.pinMode(FS24, wiringpi.OUTPUT)
 
-number_aqua = int(input("Qual aquario alimentar 1, 2 ou os dois(3)? "))
-number_tip1 = int(input("Qual ração 1, 2 do aquario 1? "))
+    conta = 0
 
-if(number_aqua == 3):
-    number_tip2 = int(input("Qual ração 1, 2 do aquario 2? "))
+    thread1 = threading.Thread(target=alimentar, args=[conta, number_aqua])
+    thread1.start()
 
-thread1 = threading.Thread(target=alimentar, args=[conta])
-thread1.start()
+    time.sleep(1)
 
-time.sleep(1)
+    thread2 = threading.Thread(target=fuso, args=[conta, number_aqua])
+    thread2.start()
 
-thread2 = threading.Thread(target=fuso, args=[conta])
-thread2.start()
+    thread1.join()
 
-thread1.join()
+    print('Aquario alimentado: ', number_aqua)
 
-print('Aquario alimentado: ', number_aqua)
-print('Ração fornecida: ', number_tip1)
+
+feed_fishes(1)
