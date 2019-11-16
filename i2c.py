@@ -118,4 +118,3 @@ if __name__ == "__main__":
             monitoring(slave2_addr)
         if(x == 2):
             change_water(slave2_addr)
-
