@@ -1,19 +1,24 @@
+from w1thermsensor import W1ThermSensor
 import socketio
+import I2C_LCD_driver
+import time
+lcdi2c = I2C_LCD_driver.lcd()
+sensor = W1ThermSensor()
 
 AQUARIUM_NAME = 'AQUARIO_DU_LERMEN'
 
-# RESPONSE = {
-#     'params': {'name': AQUARIUM_NAME},
-#     'body': {
-#         'ph': '9.9',
-#         'waterLevel': '99%',
-#         'temperature': '99°C',
-#     }
-# }
-RESPONSE_2 = {
+RESPONSE = {
     'params': {'name': AQUARIUM_NAME},
-    'body': {}
+    'body': {
+        'ph': '9.9',
+        'waterLevel': '99%',
+        'temperature': '99°C',
+    }
 }
+# RESPONSE_2 = {
+#     'params': {'name': AQUARIUM_NAME},
+#     'body': {}
+# }
 
 
 sio = socketio.Client()
@@ -21,7 +26,7 @@ sio = socketio.Client()
 
 @sio.on('connect', namespace='/scheduling')
 def scheduling_connect():
-    sio.emit('CLIENT_INFO', RESPONSE_2, namespace="/scheduling")
+    sio.emit('CLIENT_INFO', RESPONSE, namespace="/scheduling")
 
 
 @sio.on('REQUEST_FEED_FISHES', namespace='/scheduling')
@@ -44,12 +49,14 @@ def turn_off_lights(data):
 
 @sio.on('connect', namespace='/aquarium')
 def aquarium_connect():
-    sio.emit('CLIENT_INFO', RESPONSE_2, namespace="/aquarium")
+    sio.emit('CLIENT_INFO', RESPONSE, namespace="/aquarium")
 
 
 @sio.on('DISPLAY_PIN', namespace='/aquarium')
 def display_pin(data):
     if(AQUARIUM_NAME == data['aquarium']):
+        lcdi2c.lcd_clear()
+        lcdi2c.lcd_display_string("PIN: %d" % data['pin'], 1, 0)
         print('PIN: ', data['pin'])
 
 
