@@ -7,7 +7,10 @@ import i2c
 lcdi2c = I2C_LCD_driver.lcd()
 sensor = W1ThermSensor()
 
-AQUARIUM_NAME = 'AQUARIO_DU_LERMEN'
+AQUARIUM_NAME = 'AQUARIO_DESGRACADO'
+
+
+
 slave_addr = 0x0F
 slave2_addr = 0xE
 
@@ -16,6 +19,7 @@ sio = socketio.Client()
 
 @sio.on('connect', namespace='/scheduling')
 def scheduling_connect():
+    RESPONSE = {"params": {"name": AQUARIUM_NAME}}
     sio.emit('CLIENT_INFO', RESPONSE, namespace="/scheduling")
 
 
@@ -72,13 +76,17 @@ def turn_off_lights(data):
 
 @sio.on('connect', namespace='/aquarium')
 def aquarium_connect():
+    RESPONSE = {"params": {"name": AQUARIUM_NAME}}
     sio.emit('CLIENT_INFO', RESPONSE, namespace="/aquarium")
 
 @sio.on('DISPLAY_PIN', namespace='/aquarium')
 def display_pin(data):
     if(AQUARIUM_NAME == data['aquarium']):
+        print(data)
+        pin = "PIN: " + data['pin']
+        print(pin)
         lcdi2c.lcd_clear()
-        lcdi2c.lcd_display_string("PIN: %d" % data['pin'], 1, 0)
+        lcdi2c.lcd_display_string(pin , 1, 0)
         print('PIN: ', data['pin'])
 
 

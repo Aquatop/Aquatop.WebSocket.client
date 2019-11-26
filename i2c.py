@@ -3,20 +3,20 @@ from smbus2 import SMBus
 from time import sleep
 LED = 5
 INPUT = {
-    1: 'PH: ',
-    2: 'TEMPERATURA: ',
-    3: 'NIVEL: ',
+    1: 'ph',
+    2: 'temperature',
+    3: 'waterLevel',
     4: 'LUMINOSIDADE: ',
     9: 'TROCA DE AGUA: '
 }
 
 def turnOnLights():
-    wiringPiSetup()
+    wiringpi.wiringPiSetup()
     wiringpi.pinMode(LED, wiringpi.OUTPUT)
     wiringpi.digitalWrite(LED,1)
 
 def turnOffLights():
-    wiringPiSetup()
+    wiringpi.wiringPiSetup()
     wiringpi.pinMode(LED, wiringpi.OUTPUT)
     wiringpi.digitalWrite(LED,0)
 
