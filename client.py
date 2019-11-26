@@ -1,9 +1,9 @@
-from w1thermsensor import W1ThermSensor
+# from w1thermsensor import W1ThermSensor
 import socketio
-import I2C_LCD_driver
+# import I2C_LCD_driver
 import time
-lcdi2c = I2C_LCD_driver.lcd()
-sensor = W1ThermSensor()
+# lcdi2c = I2C_LCD_driver.lcd()
+# sensor = W1ThermSensor()
 
 AQUARIUM_NAME = 'AQUARIO_DU_LERMEN'
 
@@ -11,7 +11,7 @@ RESPONSE = {
     'params': {'name': AQUARIUM_NAME},
     'body': {
         'ph': '9.9',
-        'waterLevel': '99%',
+        'waterLevel': '99',
         'temperature': '99°C',
     }
 }
@@ -29,10 +29,34 @@ def scheduling_connect():
     sio.emit('CLIENT_INFO', RESPONSE, namespace="/scheduling")
 
 
+@sio.on('REQUEST_FEED_FISHES', namespace='/aquarium')
+def feed_fishes(data):
+    if(AQUARIUM_NAME == data['aquarium']):
+        print('FEEDIND FISHES')
+
+
 @sio.on('REQUEST_FEED_FISHES', namespace='/scheduling')
 def feed_fishes(data):
     if(AQUARIUM_NAME == data['aquarium']):
         print('FEEDIND FISHES')
+
+
+@sio.on('REQUEST_SWAP_WATER', namespace='/aquarium')
+def swap_water(data):
+    if(AQUARIUM_NAME == data['aquarium']):
+        print('SWAPPING WATER')
+
+
+@sio.on('REQUEST_SWAP_WATER', namespace='/scheduling')
+def swap_water(data):
+    if(AQUARIUM_NAME == data['aquarium']):
+        print('SWAPPING WATER')
+
+
+@sio.on('REQUEST_TURN_ON_LIGHTS', namespace='/aquarium')
+def turn_on_lights(data):
+    if(AQUARIUM_NAME == data['aquarium']):
+        print('TURNING ON LIGHTS')
 
 
 @sio.on('REQUEST_TURN_ON_LIGHTS', namespace='/scheduling')
@@ -41,22 +65,23 @@ def turn_on_lights(data):
         print('TURNING ON LIGHTS')
 
 
+@sio.on('REQUEST_TURN_OFF_LIGHTS', namespace='/aquarium')
+def turn_off_lights(data):
+    if(AQUARIUM_NAME == data['aquarium']):
+        print('TURNING OFF LIGHTS')
+
+
 @sio.on('REQUEST_TURN_OFF_LIGHTS', namespace='/scheduling')
 def turn_off_lights(data):
     if(AQUARIUM_NAME == data['aquarium']):
         print('TURNING OFF LIGHTS')
 
 
-@sio.on('connect', namespace='/aquarium')
-def aquarium_connect():
-    sio.emit('CLIENT_INFO', RESPONSE, namespace="/aquarium")
-
-
 @sio.on('DISPLAY_PIN', namespace='/aquarium')
 def display_pin(data):
     if(AQUARIUM_NAME == data['aquarium']):
-        lcdi2c.lcd_clear()
-        lcdi2c.lcd_display_string("PIN: %d" % data['pin'], 1, 0)
+        # lcdi2c.lcd_clear()
+        # lcdi2c.lcd_display_string("PIN: %d" % data['pin'], 1, 0)
         print('PIN: ', data['pin'])
 
 
