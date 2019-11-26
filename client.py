@@ -1,25 +1,15 @@
-# from w1thermsensor import W1ThermSensor
+from w1thermsensor import W1ThermSensor
 import socketio
-# import I2C_LCD_driver
+import I2C_LCD_driver
 import time
-# lcdi2c = I2C_LCD_driver.lcd()
-# sensor = W1ThermSensor()
+import al
+import i2c
+lcdi2c = I2C_LCD_driver.lcd()
+sensor = W1ThermSensor()
 
 AQUARIUM_NAME = 'AQUARIO_DU_LERMEN'
-
-RESPONSE = {
-    'params': {'name': AQUARIUM_NAME},
-    'body': {
-        'ph': '9.9',
-        'waterLevel': '99',
-        'temperature': '99°C',
-    }
-}
-# RESPONSE_2 = {
-#     'params': {'name': AQUARIUM_NAME},
-#     'body': {}
-# }
-
+slave_addr = 0x0F
+slave2_addr = 0xE
 
 sio = socketio.Client()
 
@@ -32,6 +22,7 @@ def scheduling_connect():
 @sio.on('REQUEST_FEED_FISHES', namespace='/aquarium')
 def feed_fishes(data):
     if(AQUARIUM_NAME == data['aquarium']):
+        al.feed_fishes(1)
         print('FEEDIND FISHES')
 
 
@@ -44,6 +35,7 @@ def feed_fishes(data):
 @sio.on('REQUEST_SWAP_WATER', namespace='/aquarium')
 def swap_water(data):
     if(AQUARIUM_NAME == data['aquarium']):
+        i2c.change_water(slave2_addr)
         print('SWAPPING WATER')
 
 
@@ -56,6 +48,7 @@ def swap_water(data):
 @sio.on('REQUEST_TURN_ON_LIGHTS', namespace='/aquarium')
 def turn_on_lights(data):
     if(AQUARIUM_NAME == data['aquarium']):
+        i2c.turnOnLights()
         print('TURNING ON LIGHTS')
 
 
@@ -68,6 +61,7 @@ def turn_on_lights(data):
 @sio.on('REQUEST_TURN_OFF_LIGHTS', namespace='/aquarium')
 def turn_off_lights(data):
     if(AQUARIUM_NAME == data['aquarium']):
+        i2c.turnOffLights()
         print('TURNING OFF LIGHTS')
 
 
@@ -76,12 +70,15 @@ def turn_off_lights(data):
     if(AQUARIUM_NAME == data['aquarium']):
         print('TURNING OFF LIGHTS')
 
+@sio.on('connect', namespace='/aquarium')
+def aquarium_connect():
+    sio.emit('CLIENT_INFO', RESPONSE, namespace="/aquarium")
 
 @sio.on('DISPLAY_PIN', namespace='/aquarium')
 def display_pin(data):
     if(AQUARIUM_NAME == data['aquarium']):
-        # lcdi2c.lcd_clear()
-        # lcdi2c.lcd_display_string("PIN: %d" % data['pin'], 1, 0)
+        lcdi2c.lcd_clear()
+        lcdi2c.lcd_display_string("PIN: %d" % data['pin'], 1, 0)
         print('PIN: ', data['pin'])
 
 
@@ -100,10 +97,8 @@ def monitoring_connect():
 @sio.on('REQUEST_REPORT', namespace='/monitoring')
 def respond_report(data):
     if(AQUARIUM_NAME == data['aquarium']):
-        file = open('aquario1.txt', 'r')
         RESPONSE = {'params': {'name': AQUARIUM_NAME}}
-        RESPONSE['body'] = eval(file.read())
-        file.close()
+        RESPONSE['body'] = i2c.monitoring(slave2_addr)
 
         print(RESPONSE)
 
@@ -115,6 +110,6 @@ def disconnect():
     print('disconnected from server')
 
 
-sio.connect('http://localhost:8080', socketio_path='/websocket-server',
+sio.connect('http://192.168.0.55:8080', socketio_path='/websocket-server',
             namespaces=['/monitoring', '/aquarium', '/scheduling'])
 sio.wait()

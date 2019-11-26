@@ -25,7 +25,6 @@ SEQUENCIA = [0x08, 0x0C, 0x04, 0x06, 0x02, 0x03, 0x01, 0x09]
 
 PASSOS_POR_ROTACAO = 512
 
-
 def sentidoHorario():
     for i in range(7, 0, -1):
         setOutput(i)
@@ -86,14 +85,25 @@ def setOutputFuso2(out):
     wiringpi.digitalWrite(FS24, var4)
 
 
-def alimentar(conta, number_aqua):
+def alimentar(number_aqua):
+    global conta
+    conta = 0
+    
+    print("Entrou Alimentar: ", conta)
+    
+    flag = 0
     if(number_aqua == 1):
+        print("Entrou if: ", conta)
         while(wiringpi.digitalRead(FDC1) != 0):
             sentidoHorario()
             conta += 1
+            # print("Conta Alimentar: ", conta)
         while(conta >= 0):
             sentidoAntiHorario()
             conta -= 1
+            if(flag == 0):
+                flag = 1 
+                print("AAAAAAAAAAAAAAAAA Alimentar: ", conta)
     elif(number_aqua == 2):
         while(wiringpi.digitalRead(FDC2) != 0):
             sentidoAntiHorario()
@@ -103,12 +113,15 @@ def alimentar(conta, number_aqua):
             conta -= 1
 
 
-def fuso(conta, number_aqua):
+def fuso(number_aqua = 2):
+    print("Entrou Fuso: ", conta)
     if number_aqua == 1:
-        while(conta > 0 and conta <= 2 * PASSOS_POR_ROTACAO):
-            pass
-        while(conta >= 2 * PASSOS_POR_ROTACAO and conta <= 4 * PASSOS_POR_ROTACAO):
-            gira_fuso1()
+        print("Entrou IF", conta)
+        while(conta < 3 * PASSOS_POR_ROTACAO ):
+            print("Conta Fuso: ", conta)
+        while(conta >= 3 * PASSOS_POR_ROTACAO ):
+            gira_fuso2()
+            print("Conta Fuso: ", conta)
     else:
         while(conta > 0 and conta <= 2 * PASSOS_POR_ROTACAO):
             pass
@@ -139,19 +152,19 @@ def feed_fishes(number_aqua):
     wiringpi.pinMode(FS23, wiringpi.OUTPUT)
     wiringpi.pinMode(FS24, wiringpi.OUTPUT)
 
-    conta = 0
+    # global conta
+    # conta = 0
 
-    thread1 = threading.Thread(target=alimentar, args=[conta, number_aqua])
+    time.sleep(1)
+
+    thread1 = threading.Thread(target=alimentar, args=[number_aqua])
     thread1.start()
 
     time.sleep(1)
 
-    thread2 = threading.Thread(target=fuso, args=[conta, number_aqua])
+    thread2 = threading.Thread(target=fuso, args=[number_aqua])
     thread2.start()
 
     thread1.join()
 
     print('Aquario alimentado: ', number_aqua)
-
-
-feed_fishes(1)

@@ -1,7 +1,7 @@
 import wiringpi
 from smbus2 import SMBus
 from time import sleep
-
+LED = 5
 INPUT = {
     1: 'PH: ',
     2: 'TEMPERATURA: ',
@@ -10,8 +10,15 @@ INPUT = {
     9: 'TROCA DE AGUA: '
 }
 
-AQUARIUM_NAME = 'AQUARIO_1'
+def turnOnLights():
+    wiringPiSetup()
+    wiringpi.pinMode(LED, wiringpi.OUTPUT)
+    wiringpi.digitalWrite(LED,1)
 
+def turnOffLights():
+    wiringPiSetup()
+    wiringpi.pinMode(LED, wiringpi.OUTPUT)
+    wiringpi.digitalWrite(LED,0)
 
 def monitoring(slave_addr):
     response = {}
@@ -36,7 +43,7 @@ def change_water(slave_addr):
     payload = 3
     response = 0
     other_response = 0
-    bomba2 = 7
+    bomba2 = 0
 
     bus = SMBus(1)
     wiringpi.wiringPiSetup()
@@ -68,7 +75,7 @@ def change_water(slave_addr):
             print(other_response, ' - ', count)
             sleep(0.5)
             
-            if(other_response > 15):
+            if(other_response > 12):
                 count += 1
             else:
                 count = 0
@@ -80,7 +87,7 @@ def change_water(slave_addr):
         sleep(0.5)
 
         payload = 3
-        wiringpi.digitalWrite(bomba2, 1)
+        wiringpi.digitalWrite(bomba2, 0)
 
         bus.write_byte(slave_addr, payload)
         sleep(0.5)
@@ -94,27 +101,9 @@ def change_water(slave_addr):
             sleep(0.5)
 
         payload = 11
-        wiringpi.digitalWrite(bomba2, 0)
+        wiringpi.digitalWrite(bomba2, 1)
 
         bus.write_byte(slave_addr, payload)
         sleep(0.5)
 
     bus.close()
-
-
-if __name__ == "__main__":
-    slave_addr = 0x0F
-    slave2_addr = 0xE
-
-    # if(AQUARIUM_NAME == 'AQUARIO_1'):
-    #     msp(slave_addr)
-    # elif(AQUARIUM_NAME == 'AQUARIO_2'):
-    #     msp(slave2_addr)
-    x = 0
-    while(x != 3):
-        x = int(input('Ler 1 Trocar agua 2: '))
-    
-        if(x == 1):
-            monitoring(slave2_addr)
-        if(x == 2):
-            change_water(slave2_addr)
