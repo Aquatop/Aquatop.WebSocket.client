@@ -87,23 +87,18 @@ def setOutputFuso2(out):
 
 def alimentar(number_aqua):
     global conta
-    conta = 0
-    
-    print("Entrou Alimentar: ", conta)
-    
+    conta = 0    
     flag = 0
+
     if(number_aqua == 1):
-        print("Entrou if: ", conta)
         while(wiringpi.digitalRead(FDC1) != 0):
             sentidoHorario()
             conta += 1
-            # print("Conta Alimentar: ", conta)
         while(conta >= 0):
             sentidoAntiHorario()
             conta -= 1
             if(flag == 0):
                 flag = 1 
-                print("AAAAAAAAAAAAAAAAA Alimentar: ", conta)
     elif(number_aqua == 2):
         while(wiringpi.digitalRead(FDC2) != 0):
             sentidoAntiHorario()
@@ -113,15 +108,12 @@ def alimentar(number_aqua):
             conta -= 1
 
 
-def fuso(number_aqua = 2):
-    print("Entrou Fuso: ", conta)
+def fuso(number_aqua):
     if number_aqua == 1:
-        print("Entrou IF", conta)
         while(conta < 3 * PASSOS_POR_ROTACAO ):
-            print("Conta Fuso: ", conta)
+            pass
         while(conta >= 3 * PASSOS_POR_ROTACAO ):
             gira_fuso2()
-            print("Conta Fuso: ", conta)
     else:
         while(conta > 0 and conta <= 2 * PASSOS_POR_ROTACAO):
             pass

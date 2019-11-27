@@ -33,8 +33,6 @@ def monitoring(slave_addr):
 
     bus.close()
 
-    print(response)
-
     return response
 
 
@@ -53,7 +51,6 @@ def change_water(slave_addr):
     sleep(0.5)
     response = bus.read_byte(slave_addr)
     sleep(0.5)
-    print(response)
 
     if(response == 10):
         #payload = 3
@@ -62,11 +59,7 @@ def change_water(slave_addr):
         sleep(0.5)
         other_response = bus.read_byte(slave_addr)
         sleep(0.5)
-        
-        print('entrou while')
-        print(other_response)
-        other_response = 0
-        
+         
         count = 0
         while(count < 4):
             bus.write_byte(slave_addr, payload)
@@ -80,7 +73,6 @@ def change_water(slave_addr):
             else:
                 count = 0
 
-        print('saiu while')
         payload = 10
 
         bus.write_byte(slave_addr, payload)
