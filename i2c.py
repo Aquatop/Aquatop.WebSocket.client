@@ -10,6 +10,11 @@ INPUT = {
     9: 'TROCA DE AGUA: '
 }
 
+def returnAngle(pot,slaveAddr):
+    bus = SMBus(1)
+    bus.write_byte(slaveAddr,pot)
+    sleep(0.2)
+    
 def turnOnLights():
     wiringpi.wiringPiSetup()
     wiringpi.pinMode(LED, wiringpi.OUTPUT)
