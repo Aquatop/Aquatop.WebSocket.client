@@ -1,13 +1,13 @@
-#from w1thermsensor import W1ThermSensor
+from w1thermsensor import W1ThermSensor
 from rq import use_connection, Queue
 import socketio
-#import I2C_LCD_driver
+import I2C_LCD_driver
 import time
-#import al
-#import i2c
+import al
+import i2c
 lcdi2c1 = I2C_LCD_driver.lcd(0x27)
-lcdi2c2 = I2C_LCD_driver.lcd(0x20)
-#sensor = W1ThermSensor() 
+lcdi2c2 = I2C_LCD_driver.lcd(0x23)
+sensor = W1ThermSensor() 
 
 AQUARIO_1 = 'AQUARIO_1'
 AQUARIO_2 = 'AQUARIO_2' 
@@ -34,6 +34,8 @@ slave2_addr = 0xE
 
 use_connection()
 queue = Queue()
+
+global sio
 
 sio = socketio.Client()
 
@@ -157,10 +159,10 @@ def monitoring_connect():
 def respond_report(data):
     print('Monitoramento solicitado')
     if(AQUARIO_1 == data['aquarium']):
-        queue.enqueue(i2c.monitoring, slave_addr, 0, sio, RESPONSE)
+        i2c.monitoring(slave_addr, 0, RESPONSE)
       
     elif(AQUARIO_2 == data['aquarium']):
-        queue.enqueue(i2c.monitoring, slave2_addr, 1, sio, RESPONSE2)
+        i2c.monitoring(slave2_addr, 1, RESPONSE2)
 
 
 @sio.event
@@ -168,6 +170,6 @@ def disconnect():
     print('disconnected from server')
 
 
-sio.connect('http://localhost:8080', socketio_path='/websocket-server',
+sio.connect('http://104.248.58.252:80', socketio_path='/websocket-server',
             namespaces=['/monitoring', '/aquarium', '/scheduling'])
 sio.wait()

@@ -28,12 +28,12 @@ lastemp = 0
 lastprocess = 0
 erro = 0
 lasterro = 0
-slaveAddr = 0x0f
+slaveAddr = 0x0e
 
 while True:
     temp = read_temp_double.read_temp()
     temperatura = float(str(temp[0]))
-    #sleep(300)
+#    sleep(300)
     while(temperatura <= 24):
         temp = read_temp_double.read_temp()
         temperatura = float(str(temp[0]))

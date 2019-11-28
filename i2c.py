@@ -34,9 +34,11 @@ def turnOffLights():
     wiringpi.pinMode(LED, wiringpi.OUTPUT)
     wiringpi.digitalWrite(LED,0)
 
-def monitoring(slave_addr, aquarium, sio, RESPONSE):
+def monitoring(slave_addr, aquarium, RESPONSE):
+    print("entrou")
+    
     response = {}
-
+    
     bus = SMBus(1)
 
     for i in range(2, 4):
@@ -45,14 +47,16 @@ def monitoring(slave_addr, aquarium, sio, RESPONSE):
         response[INPUT[i]] = bus.read_byte(slave_addr)
         sleep(0.1)
 
-    read_temp_double.read_temp()
-    response[INPUT[1]] = float(str(temp[aquarium])
+    temp = read_temp_double.read_temp()
+    response[INPUT[1]] = float(str(temp[aquarium]))
 
     bus.close()
     
+    print(response)
+    
     RESPONSE['body'] = response
 
-    sio.emit('RESPOND_REPORT', RESPONSE, namespace='/monitoring')
+    #sio.emit('RESPOND_REPORT', RESPONSE, namespace='/monitoring')
 
 
 def change_water(slave_addr):
