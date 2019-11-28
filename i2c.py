@@ -2,6 +2,7 @@ import wiringpi
 from smbus2 import SMBus
 from time import sleep
 LED = 5
+
 INPUT = {
     1: 'ph',
     2: 'temperature',
@@ -11,9 +12,14 @@ INPUT = {
 }
 
 def returnAngle(pot,slaveAddr):
+    response = 0
     bus = SMBus(1)
     bus.write_byte(slaveAddr,pot)
+    print('Alice usando lolo - ',pot)
     sleep(0.2)
+    response = bus.read_byte(slaveAddr)
+    print(response)
+    
     
 def turnOnLights():
     wiringpi.wiringPiSetup()

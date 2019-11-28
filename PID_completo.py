@@ -1,19 +1,19 @@
 import sys
 import RPi.GPIO as GPIO
-import time
 import read_temp_double
-
+import i2c
+from time import *
 
 
 # Aquisição da temperatura
-read_temp_double.read_temp()
-t1 = float(str(temp[0])
+temp = read_temp_double.read_temp()
+t1 = float(str(temp[0]))
 
 
 # Variaveis Inteiras
-i = 0
+
 angle = [0,10,20,110,70,170,30,120]
-o = 0
+
 temp_ref = 24
 
 # Variaveis float e double
@@ -28,14 +28,15 @@ lastemp = 0
 lastprocess = 0
 erro = 0
 lasterro = 0
+slaveAddr = 0x0f
 
 while True:
-    read_temp_double.read_temp()
-    temperatura = float(str(temp[0])
-    sleep(300)
+    temp = read_temp_double.read_temp()
+    temperatura = float(str(temp[0]))
+    #sleep(300)
     while(temperatura <= 24):
-        read_temp_double.read_temp()
-        temperatura = float(str(temp[0])
+        temp = read_temp_double.read_temp()
+        temperatura = float(str(temp[0]))
 
         # Implementacao PID
         erro = temp_ref - temperatura
@@ -61,34 +62,34 @@ while True:
 
         if PID < 1:
             pot = angle[7]
-            returnAngle(pot,slaveAddr)
+            i2c.returnAngle(pot,slaveAddr)
             print("Valor de ângulo (potência): ", pot)
         elif PID < 3460:
             pot = angle[6]
-            return
+            i2c.returnAngle(pot, slaveAddr)
             print("Valor de ângulo (potência): ", pot)
         elif PID < 6900:
             pot = angle[5]
-            returnAngle(pot,slaveAddr)
+            i2c.returnAngle(pot,slaveAddr)
             print("Valor de ângulo (potência): ", pot)
         elif PID < 10350:
             pot = angle[4]
-            returnAngle(pot,slaveAddr)
+            i2c.returnAngle(pot,slaveAddr)
             print("Valor de ângulo (potência): ", pot)
         elif PID < 13800:
             pot = angle[3]
-            returnAngle(pot,slaveAddr)
+            i2c.returnAngle(pot,slaveAddr)
             print("Valor de ângulo (potência): ", pot)
         elif PID < 17250:
             pot = angle[2]
-            returnAngle(pot,slaveAddr)
+            i2c.returnAngle(pot,slaveAddr)
             print("Valor de ângulo (potência): ", pot)
         elif PID < 20700:
             pot = angle[1]
-            returnAngle(pot,slaveAddr)
+            i2c.returnAngle(pot,slaveAddr)
             print("Valor de ângulo (potência): ", pot)
         elif PID < 24100:
             pot = angle[0]
-            returnAngle(pot,slaveAddr)
+            i2c.returnAngle(pot,slaveAddr)
             print("Valor de ângulo (potência): ", pot)
 print("Temperatura acima do setpoint")
