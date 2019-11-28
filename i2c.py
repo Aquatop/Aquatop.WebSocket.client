@@ -1,15 +1,18 @@
 import wiringpi
 from smbus2 import SMBus
 from time import sleep
+import read_temp_double
+
 LED = 5
 
 INPUT = {
-    1: 'ph',
-    2: 'temperature',
+    1: 'temperature',
+    2: 'ph',
     3: 'waterLevel',
     4: 'LUMINOSIDADE: ',
     9: 'TROCA DE AGUA: '
 }
+
 
 def returnAngle(pot,slaveAddr):
     response = 0
@@ -31,20 +34,25 @@ def turnOffLights():
     wiringpi.pinMode(LED, wiringpi.OUTPUT)
     wiringpi.digitalWrite(LED,0)
 
-def monitoring(slave_addr):
+def monitoring(slave_addr, aquarium, sio, RESPONSE):
     response = {}
 
     bus = SMBus(1)
 
-    for i in range(1, 4):
+    for i in range(2, 4):
         bus.write_byte(slave_addr, i)
         sleep(0.1)
         response[INPUT[i]] = bus.read_byte(slave_addr)
         sleep(0.1)
 
-    bus.close()
+    read_temp_double.read_temp()
+    response[INPUT[1]] = float(str(temp[aquarium])
 
-    return response
+    bus.close()
+    
+    RESPONSE['body'] = response
+
+    sio.emit('RESPOND_REPORT', RESPONSE, namespace='/monitoring')
 
 
 def change_water(slave_addr):
