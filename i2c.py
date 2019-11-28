@@ -2,6 +2,7 @@ import wiringpi
 from smbus2 import SMBus
 from time import sleep
 import read_temp_double
+import socketio
 
 LED = 5
 
@@ -38,7 +39,7 @@ def monitoring(slave_addr, aquarium, RESPONSE):
     print("entrou")
     
     response = {}
-    
+
     bus = SMBus(1)
 
     for i in range(2, 4):
@@ -56,7 +57,11 @@ def monitoring(slave_addr, aquarium, RESPONSE):
     
     RESPONSE['body'] = response
 
-    #sio.emit('RESPOND_REPORT', RESPONSE, namespace='/monitoring')
+    sio = socketio.Client()
+    sio.connect('http://104.248.58.252:80', socketio_path='/websocket-server',
+            namespaces=['/monitoring'])
+    sio.emit('RESPOND_REPORT', RESPONSE, namespace='/monitoring')
+    sio.disconnect()
 
 
 def change_water(slave_addr):

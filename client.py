@@ -35,8 +35,6 @@ slave2_addr = 0xE
 use_connection()
 queue = Queue()
 
-global sio
-
 sio = socketio.Client()
 
 
@@ -159,10 +157,10 @@ def monitoring_connect():
 def respond_report(data):
     print('Monitoramento solicitado')
     if(AQUARIO_1 == data['aquarium']):
-        i2c.monitoring(slave_addr, 0, RESPONSE)
+        queue.enqueue(i2c.monitoring, slave_addr, 0, RESPONSE)
       
     elif(AQUARIO_2 == data['aquarium']):
-        i2c.monitoring(slave2_addr, 1, RESPONSE2)
+        queue.enqueue(i2c.monitoring, slave2_addr, 1, RESPONSE2)
 
 
 @sio.event
