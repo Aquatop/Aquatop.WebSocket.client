@@ -25,6 +25,7 @@ SEQUENCIA = [0x08, 0x0C, 0x04, 0x06, 0x02, 0x03, 0x01, 0x09]
 
 PASSOS_POR_ROTACAO = 512
 
+
 def sentidoHorario():
     for i in range(7, 0, -1):
         setOutput(i)
@@ -87,8 +88,7 @@ def setOutputFuso2(out):
 
 def alimentar(number_aqua):
     global conta
-    conta = 0    
-    flag = 0
+    conta = 0
 
     if(number_aqua == 1):
         while(wiringpi.digitalRead(FDC1) != 0):
@@ -97,8 +97,6 @@ def alimentar(number_aqua):
         while(conta >= 0):
             sentidoAntiHorario()
             conta -= 1
-            if(flag == 0):
-                flag = 1 
     elif(number_aqua == 2):
         while(wiringpi.digitalRead(FDC2) != 0):
             sentidoAntiHorario()
@@ -110,14 +108,14 @@ def alimentar(number_aqua):
 
 def fuso(number_aqua):
     if number_aqua == 1:
-        while(conta < 3 * PASSOS_POR_ROTACAO ):
+        while(conta < 3 * PASSOS_POR_ROTACAO):
             pass
-        while(conta >= 3 * PASSOS_POR_ROTACAO ):
-            gira_fuso2()
-    else:
-        while(conta > 0 and conta <= 2 * PASSOS_POR_ROTACAO):
+        while(conta >= 3 * PASSOS_POR_ROTACAO):
+            gira_fuso1()
+    elif number_aqua == 2:
+        while(conta < 3 * PASSOS_POR_ROTACAO):
             pass
-        while(conta >= 2 * PASSOS_POR_ROTACAO and conta <= 4 * PASSOS_POR_ROTACAO):
+        while(conta >= 3 * PASSOS_POR_ROTACAO):
             gira_fuso2()
 
 
