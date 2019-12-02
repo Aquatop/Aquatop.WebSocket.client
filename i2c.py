@@ -69,7 +69,7 @@ def change_water(slave_addr):
     payload = 3
     response = 0
     other_response = 0
-    bomba2 = 0
+    bomba2 = 1
 
     bus = SMBus(1)
     wiringpi.wiringPiSetup()
@@ -127,3 +127,5 @@ def change_water(slave_addr):
         sleep(0.5)
 
     bus.close()
+
+# change_water(0xf)

@@ -2,6 +2,8 @@ import wiringpi
 import threading
 import time
 
+# global conta
+
 IN1 = 0
 IN2 = 2
 IN3 = 3
@@ -17,7 +19,7 @@ FS22 = 27
 FS23 = 28
 FS24 = 29
 
-FDC1 = 6
+FDC1 = 1
 FDC2 = 25
 
 VEL_MOTOR = 1048
@@ -109,9 +111,10 @@ def alimentar(number_aqua):
 def fuso(number_aqua):
     if number_aqua == 1:
         while(conta < 3 * PASSOS_POR_ROTACAO):
-            pass
+            print(conta)
         while(conta >= 3 * PASSOS_POR_ROTACAO):
             gira_fuso1()
+            print(conta)
     elif number_aqua == 2:
         while(conta < 3 * PASSOS_POR_ROTACAO):
             pass
@@ -154,7 +157,25 @@ def feed_fishes(number_aqua):
 
     thread2 = threading.Thread(target=fuso, args=[number_aqua])
     thread2.start()
+    
+    # alimentar(number_aqua)
 
     thread1.join()
+    thread2.join()
+    
+    wiringpi.digitalWrite(IN1, 0)
+    wiringpi.digitalWrite(IN2, 0)
+    wiringpi.digitalWrite(IN3, 0)
+    wiringpi.digitalWrite(IN4, 0)
+    
+    wiringpi.digitalWrite(FS11, 0)
+    wiringpi.digitalWrite(FS12, 0)
+    wiringpi.digitalWrite(FS13, 0)
+    wiringpi.digitalWrite(FS14, 0)
+    
+    wiringpi.digitalWrite(FS21, 0)
+    wiringpi.digitalWrite(FS22, 0)
+    wiringpi.digitalWrite(FS23, 0)
+    wiringpi.digitalWrite(FS24, 0)
 
     print('Aquario alimentado: ', number_aqua)
