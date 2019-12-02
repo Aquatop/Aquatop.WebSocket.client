@@ -5,8 +5,8 @@ import I2C_LCD_driver
 import time
 import al
 import i2c
-lcdi2c1 = I2C_LCD_driver.lcd(0x27)
-lcdi2c2 = I2C_LCD_driver.lcd(0x23)
+lcdi2c1 = I2C_LCD_driver.lcd(0x23)
+lcdi2c2 = I2C_LCD_driver.lcd(0x27)
 sensor = W1ThermSensor() 
 
 AQUARIO_1 = 'AQUARIO_1'

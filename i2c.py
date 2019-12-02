@@ -15,29 +15,31 @@ INPUT = {
 }
 
 
-def returnAngle(pot,slaveAddr):
+def returnAngle(pot, slaveAddr):
     response = 0
     bus = SMBus(1)
-    bus.write_byte(slaveAddr,pot)
-    print('Alice usando lolo - ',pot)
+    bus.write_byte(slaveAddr, pot)
+    print('Alice usando lolo - ', pot)
     sleep(0.2)
     response = bus.read_byte(slaveAddr)
     print(response)
-    
-    
+
+
 def turnOnLights():
     wiringpi.wiringPiSetup()
     wiringpi.pinMode(LED, wiringpi.OUTPUT)
-    wiringpi.digitalWrite(LED,1)
+    wiringpi.digitalWrite(LED, 1)
+
 
 def turnOffLights():
     wiringpi.wiringPiSetup()
     wiringpi.pinMode(LED, wiringpi.OUTPUT)
-    wiringpi.digitalWrite(LED,0)
+    wiringpi.digitalWrite(LED, 0)
+
 
 def monitoring(slave_addr, aquarium, RESPONSE):
     print("entrou")
-    
+
     response = {}
 
     bus = SMBus(1)
@@ -52,16 +54,22 @@ def monitoring(slave_addr, aquarium, RESPONSE):
     response[INPUT[1]] = float(str(temp[aquarium]))
 
     bus.close()
-    
+
     print(response)
-    
+
     RESPONSE['body'] = response
 
     sio = socketio.Client()
-    sio.connect('http://104.248.58.252:80', socketio_path='/websocket-server',
-            namespaces=['/monitoring'])
-    sio.emit('RESPOND_REPORT', RESPONSE, namespace='/monitoring')
-    sio.disconnect()
+    sio.connect('http://104.248.58.252:80',
+                socketio_path='/websocket-server', namespaces=['/monitoring'])
+
+    @sio.on('connect', namespace='/monitoring')
+    def monitoring_connect():
+        sio.emit('RESPOND_REPORT', RESPONSE, namespace='/monitoring')
+        print('Enviou: ', RESPONSE)
+        sio.disconnect()
+    
+    sio.wait()
 
 
 def change_water(slave_addr):
@@ -87,7 +95,7 @@ def change_water(slave_addr):
         sleep(0.5)
         other_response = bus.read_byte(slave_addr)
         sleep(0.5)
-         
+
         count = 0
         while(count < 4):
             bus.write_byte(slave_addr, payload)
@@ -95,7 +103,7 @@ def change_water(slave_addr):
             other_response = bus.read_byte(slave_addr)
             print(other_response, ' - ', count)
             sleep(0.5)
-            
+
             if(other_response > 12):
                 count += 1
             else:
@@ -129,3 +137,4 @@ def change_water(slave_addr):
     bus.close()
 
 # change_water(0xf)
+
