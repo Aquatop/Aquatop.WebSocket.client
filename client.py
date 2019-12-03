@@ -1,13 +1,15 @@
-from w1thermsensor import W1ThermSensor
+# from w1thermsensor import W1ThermSensor
 from rq import use_connection, Queue
 from time import sleep
 import socketio
 import I2C_LCD_driver
 import al
 import i2c
+import read_temp_double
+
 lcdi2c1 = I2C_LCD_driver.lcd(0x23)
 lcdi2c2 = I2C_LCD_driver.lcd(0x27)
-sensor = W1ThermSensor()
+# sensor = W1ThermSensor()
 
 AQUARIO_1 = 'AQUARIO_1'
 AQUARIO_2 = 'AQUARIO_2'
@@ -126,16 +128,19 @@ def aquarium_connect():
 
 @sio.on('DISPLAY_PIN', namespace='/aquarium')
 def display_pin(data):
+    dict(data)
     pin = "PIN: " + data['pin']
     print(pin)
     if(AQUARIO_1 == data['aquarium']):
         lcdi2c1.lcd_clear()
-        lcdi2c1.lcd_display_string(pin, 1, 0)
+        lcdi2c1.lcd_display_string(AQUARIO_1, 1, 0)
+        lcdi2c1.lcd_display_string(pin, 2, 0)
         sleep(5)
         lcdi2c1.lcd_clear()
     if(AQUARIO_2 == data['aquarium']):
         lcdi2c2.lcd_clear()
-        lcdi2c2.lcd_display_string(pin, 1, 0)
+        lcdi2c2.lcd_display_string(AQUARIO_2, 1, 0)
+        lcdi2c2.lcd_display_string(pin, 2, 0)
         sleep(5)
         lcdi2c2.lcd_clear()
 
@@ -164,4 +169,17 @@ def disconnect():
 
 sio.connect('http://104.248.58.252:80', socketio_path='/websocket-server',
             namespaces=['/monitoring', '/aquarium', '/scheduling'])
+
+temp = read_temp_double.read_temp()
+tem_aqua1 = str(temp[0])
+tem_aqua2 = str(temp[1])
+
+lcdi2c1.lcd_clear()
+lcdi2c1.lcd_display_string(AQUARIO_1, 1, 0)
+lcdi2c1.lcd_display_string(tem_aqua1, 2, 0)
+
+lcdi2c2.lcd_clear()
+lcdi2c2.lcd_display_string(AQUARIO_2, 1, 0)
+lcdi2c2.lcd_display_string(tem_aqua2, 2, 0)
+
 sio.wait()
