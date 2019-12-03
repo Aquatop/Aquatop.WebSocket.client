@@ -15,10 +15,10 @@ AQUARIO_2 = 'AQUARIO_2'
 RESPONSE = {
     'params': {'name': AQUARIO_1},
     'body':  {
-         'ph': '0',
-         'waterLevel': 0,
-         'temperature': '0°C',
-     }
+        'ph': '0',
+        'waterLevel': 0,
+        'temperature': '0°C',
+    }
 }
 RESPONSE2 = {
     'params': {'name': AQUARIO_2},
@@ -126,17 +126,16 @@ def aquarium_connect():
 
 @sio.on('DISPLAY_PIN', namespace='/aquarium')
 def display_pin(data):
-	pin = "PIN: " + data['pin']
-	print(pin)
-
+    pin = "PIN: " + data['pin']
+    print(pin)
     if(AQUARIO_1 == data['aquarium']):
-		lcdi2c1.lcd_clear()
-        lcdi2c1.lcd_display_string(pin , 1, 0)
+        lcdi2c1.lcd_clear()
+        lcdi2c1.lcd_display_string(pin, 1, 0)
         sleep(5)
         lcdi2c1.lcd_clear()
     if(AQUARIO_2 == data['aquarium']):
         lcdi2c2.lcd_clear()
-        lcdi2c2.lcd_display_string(pin , 1, 0)
+        lcdi2c2.lcd_display_string(pin, 1, 0)
         sleep(5)
         lcdi2c2.lcd_clear()
 
@@ -153,7 +152,7 @@ def respond_report(data):
     print('Monitoramento solicitado')
     if(AQUARIO_1 == data['aquarium']):
         queue.enqueue(i2c.monitoring, slave_addr, 0, RESPONSE)
-      
+
     elif(AQUARIO_2 == data['aquarium']):
         queue.enqueue(i2c.monitoring, slave2_addr, 1, RESPONSE2)
 
