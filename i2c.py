@@ -5,6 +5,10 @@ import read_temp_double
 import socketio
 
 LED = 5
+bomba2 = 1
+wiringpi.wiringPiSetup()
+wiringpi.pinMode(bomba2, wiringpi.OUTPUT)
+wiringpi.digitalWrite(bomba2, 1)
 
 INPUT = {
     1: 'temperature',
@@ -97,7 +101,7 @@ def change_water(slave_addr):
         sleep(0.5)
 
         count = 0
-        while(count < 4):
+        while(count < 10):
             bus.write_byte(slave_addr, payload)
             sleep(0.5)
             other_response = bus.read_byte(slave_addr)
@@ -121,12 +125,18 @@ def change_water(slave_addr):
         sleep(0.5)
         other_response = bus.read_byte(slave_addr)
 
-        while(other_response > 8):
+        count = 0
+        while(count < 10):
             bus.write_byte(slave_addr, payload)
             sleep(0.5)
             other_response = bus.read_byte(slave_addr)
-            print(other_response)
+            print(other_response, ' - ', count)
             sleep(0.5)
+
+            if(other_response < 12):
+                count += 1
+            else:
+                count = 0
 
         payload = 11
         wiringpi.digitalWrite(bomba2, 1)

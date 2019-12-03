@@ -19,7 +19,7 @@ FS22 = 27
 FS23 = 28
 FS24 = 29
 
-FDC1 = 1
+FDC1 = 31
 FDC2 = 25
 
 VEL_MOTOR = 1048
@@ -109,6 +109,9 @@ def alimentar(number_aqua):
 
 
 def fuso(number_aqua):
+    # global conta
+    # conta = 0
+    
     if number_aqua == 1:
         while(conta < 3 * PASSOS_POR_ROTACAO):
             print(conta)
@@ -148,15 +151,16 @@ def feed_fishes(number_aqua):
     # global conta
     # conta = 0
 
-    time.sleep(1)
+    # time.sleep(1)
 
     thread1 = threading.Thread(target=alimentar, args=[number_aqua])
     thread1.start()
 
-    time.sleep(1)
+    # time.sleep(1)
 
     thread2 = threading.Thread(target=fuso, args=[number_aqua])
     thread2.start()
+    # thread1.start()
     
     # alimentar(number_aqua)
 
@@ -179,3 +183,5 @@ def feed_fishes(number_aqua):
     wiringpi.digitalWrite(FS24, 0)
 
     print('Aquario alimentado: ', number_aqua)
+    
+# feed_fishes(1)

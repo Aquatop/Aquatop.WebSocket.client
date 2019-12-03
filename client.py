@@ -1,8 +1,8 @@
 from w1thermsensor import W1ThermSensor
 from rq import use_connection, Queue
+from time import sleep
 import socketio
 import I2C_LCD_driver
-import time
 import al
 import i2c
 lcdi2c1 = I2C_LCD_driver.lcd(0x23)
@@ -70,11 +70,11 @@ def feed_fishes(data):
 @sio.on('REQUEST_SWAP_WATER', namespace='/aquarium')
 def swap_water(data):
     if(AQUARIO_1 == data['aquarium']):
-        queue.enqueue(i2c.change_water, slave_addr)
+        queue.enqueue(i2c.change_water, args=[slave_addr], timeout=600)
         print('SWAPPING WATER AQUARIO 1')
     
     elif(AQUARIO_2 == data['aquarium']):
-        queue.enqueue(i2c.change_water,slave2_addr)
+        queue.enqueue(i2c.change_water,args=[slave2_addr], timeout=600)
         print('SWAPPING WATER AQUARIO 2')
 
 
@@ -126,24 +126,19 @@ def aquarium_connect():
 
 @sio.on('DISPLAY_PIN', namespace='/aquarium')
 def display_pin(data):
+	pin = "PIN: " + data['pin']
+	print(pin)
+    
     if(AQUARIO_1 == data['aquarium']):
-        print(data)
-        pin = "PIN: " + data['pin']
-        print(pin)
-        lcdi2c1.lcd_clear()
+		lcdi2c1.lcd_clear()
         lcdi2c1.lcd_display_string(pin , 1, 0)
-        sleep(25)
+        sleep(5)
         lcdi2c1.lcd_clear()
-        print('PIN: ', data['pin'])
     if(AQUARIO_2 == data['aquarium']):
-        print(data)
-        pin = "PIN: " + data['pin']
-        print(pin)
         lcdi2c2.lcd_clear()
         lcdi2c2.lcd_display_string(pin , 1, 0)
-        sleep(25)
+        sleep(5)
         lcdi2c2.lcd_clear()
-        print('PIN: ', data['pin'])
 
 
 @sio.on('connect', namespace='/monitoring')
