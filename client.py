@@ -34,6 +34,21 @@ RESPONSE2 = {
 slave_addr = 0x0F
 slave2_addr = 0xE
 
+
+def set_lcd_info():
+    temp = read_temp_double.read_temp()
+    tem_aqua1 = str(temp[0])
+    tem_aqua2 = str(temp[1])
+
+    lcdi2c1.lcd_clear()
+    lcdi2c1.lcd_display_string(AQUARIO_1, 1, 0)
+    lcdi2c1.lcd_display_string(tem_aqua1, 2, 0)
+
+    lcdi2c2.lcd_clear()
+    lcdi2c2.lcd_display_string(AQUARIO_2, 1, 0)
+    lcdi2c2.lcd_display_string(tem_aqua2, 2, 0)
+
+
 use_connection()
 queue = Queue()
 
@@ -135,14 +150,14 @@ def display_pin(data):
         lcdi2c1.lcd_clear()
         lcdi2c1.lcd_display_string(AQUARIO_1, 1, 0)
         lcdi2c1.lcd_display_string(pin, 2, 0)
-        sleep(5)
-        lcdi2c1.lcd_clear()
+        sleep(20)
+        set_lcd_info()
     if(AQUARIO_2 == data['aquarium']):
         lcdi2c2.lcd_clear()
         lcdi2c2.lcd_display_string(AQUARIO_2, 1, 0)
         lcdi2c2.lcd_display_string(pin, 2, 0)
-        sleep(5)
-        lcdi2c2.lcd_clear()
+        sleep(20)
+        set_lcd_info()
 
 
 @sio.on('connect', namespace='/monitoring')
@@ -170,16 +185,6 @@ def disconnect():
 sio.connect('http://104.248.58.252:80', socketio_path='/websocket-server',
             namespaces=['/monitoring', '/aquarium', '/scheduling'])
 
-temp = read_temp_double.read_temp()
-tem_aqua1 = str(temp[0])
-tem_aqua2 = str(temp[1])
-
-lcdi2c1.lcd_clear()
-lcdi2c1.lcd_display_string(AQUARIO_1, 1, 0)
-lcdi2c1.lcd_display_string(tem_aqua1, 2, 0)
-
-lcdi2c2.lcd_clear()
-lcdi2c2.lcd_display_string(AQUARIO_2, 1, 0)
-lcdi2c2.lcd_display_string(tem_aqua2, 2, 0)
+set_lcd_info()
 
 sio.wait()
