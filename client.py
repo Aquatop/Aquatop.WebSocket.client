@@ -7,10 +7,10 @@ import al
 import i2c
 lcdi2c1 = I2C_LCD_driver.lcd(0x23)
 lcdi2c2 = I2C_LCD_driver.lcd(0x27)
-sensor = W1ThermSensor() 
+sensor = W1ThermSensor()
 
 AQUARIO_1 = 'AQUARIO_1'
-AQUARIO_2 = 'AQUARIO_2' 
+AQUARIO_2 = 'AQUARIO_2'
 
 RESPONSE = {
     'params': {'name': AQUARIO_1},
@@ -18,7 +18,7 @@ RESPONSE = {
          'ph': '0',
          'waterLevel': 0,
          'temperature': '0°C',
-     }            
+     }
 }
 RESPONSE2 = {
     'params': {'name': AQUARIO_2},
@@ -26,7 +26,7 @@ RESPONSE2 = {
         'ph': '0',
         'waterLevel': 0,
         'temperature': '0°C',
-    }            
+    }
 }
 
 slave_addr = 0x0F
@@ -48,22 +48,22 @@ def scheduling_connect():
 @sio.on('REQUEST_FEED_FISHES', namespace='/aquarium')
 def feed_fishes(data):
     if(AQUARIO_1 == data['aquarium']):
-        queue.enqueue(al.feed_fishes,1)
+        queue.enqueue(al.feed_fishes, 1)
         print('FEEDIND FISHES AQUARIO 1')
-    
+
     elif(AQUARIO_2 == data['aquarium']):
-        queue.enqueue(al.feed_fishes,2)
+        queue.enqueue(al.feed_fishes, 2)
         print('FEEDIND FISHES AQUARIO 2')
 
 
 @sio.on('REQUEST_FEED_FISHES', namespace='/scheduling')
 def feed_fishes(data):
     if(AQUARIO_1 == data['aquarium']):
-        queue.enqueue(al.feed_fishes,1)
+        queue.enqueue(al.feed_fishes, 1)
         print('FEEDIND FISHES AQUARIO 1')
-    
+
     elif(AQUARIO_2 == data['aquarium']):
-        queue.enqueue(al.feed_fishes,2)
+        queue.enqueue(al.feed_fishes, 2)
         print('FEEDIND FISHES AQUARIO 2')
 
 
@@ -72,9 +72,9 @@ def swap_water(data):
     if(AQUARIO_1 == data['aquarium']):
         queue.enqueue(i2c.change_water, args=[slave_addr], timeout=600)
         print('SWAPPING WATER AQUARIO 1')
-    
+
     elif(AQUARIO_2 == data['aquarium']):
-        queue.enqueue(i2c.change_water,args=[slave2_addr], timeout=600)
+        queue.enqueue(i2c.change_water, args=[slave2_addr], timeout=600)
         print('SWAPPING WATER AQUARIO 2')
 
 
@@ -83,7 +83,7 @@ def swap_water(data):
     if(AQUARIO_1 == data['aquarium']):
         queue.enqueue(i2c.change_water, slave_addr)
         print('SWAPPING WATER AQUARIO 1')
-    
+
     elif(AQUARIO_2 == data['aquarium']):
         queue.enqueue(i2c.change_water, slave2_addr)
         print('SWAPPING WATER AQUARIO 2')
@@ -128,7 +128,7 @@ def aquarium_connect():
 def display_pin(data):
 	pin = "PIN: " + data['pin']
 	print(pin)
-    
+
     if(AQUARIO_1 == data['aquarium']):
 		lcdi2c1.lcd_clear()
         lcdi2c1.lcd_display_string(pin , 1, 0)

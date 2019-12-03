@@ -111,7 +111,7 @@ def alimentar(number_aqua):
 def fuso(number_aqua):
     # global conta
     # conta = 0
-    
+
     if number_aqua == 1:
         while(conta < 3 * PASSOS_POR_ROTACAO):
             print(conta)
@@ -161,27 +161,27 @@ def feed_fishes(number_aqua):
     thread2 = threading.Thread(target=fuso, args=[number_aqua])
     thread2.start()
     # thread1.start()
-    
+
     # alimentar(number_aqua)
 
     thread1.join()
     thread2.join()
-    
+
     wiringpi.digitalWrite(IN1, 0)
     wiringpi.digitalWrite(IN2, 0)
     wiringpi.digitalWrite(IN3, 0)
     wiringpi.digitalWrite(IN4, 0)
-    
+
     wiringpi.digitalWrite(FS11, 0)
     wiringpi.digitalWrite(FS12, 0)
     wiringpi.digitalWrite(FS13, 0)
     wiringpi.digitalWrite(FS14, 0)
-    
+
     wiringpi.digitalWrite(FS21, 0)
     wiringpi.digitalWrite(FS22, 0)
     wiringpi.digitalWrite(FS23, 0)
     wiringpi.digitalWrite(FS24, 0)
 
     print('Aquario alimentado: ', number_aqua)
-    
+
 # feed_fishes(1)
