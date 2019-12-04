@@ -1,7 +1,7 @@
 import wiringpi
 from smbus2 import SMBus
 from time import sleep
-import read_temp_double
+# import read_temp_double
 import socketio
 
 LED = 5
@@ -54,8 +54,10 @@ def monitoring(slave_addr, aquarium, RESPONSE):
         response[INPUT[i]] = bus.read_byte(slave_addr)
         sleep(0.1)
 
-    temp = read_temp_double.read_temp()
-    response[INPUT[1]] = float(str(temp[aquarium]))
+    # temp = read_temp_double.read_temp()
+    # response[INPUT[1]] = float(str(temp[aquarium]))
+    
+    response[INPUT[1]] = 25.5
 
     bus.close()
 
@@ -108,7 +110,7 @@ def change_water(slave_addr):
             print(other_response, ' - ', count)
             sleep(0.5)
 
-            if(other_response > 12):
+            if(other_response > 17):
                 count += 1
             else:
                 count = 0
@@ -133,7 +135,7 @@ def change_water(slave_addr):
             print(other_response, ' - ', count)
             sleep(0.5)
 
-            if(other_response < 12):
+            if(other_response < 17):
                 count += 1
             else:
                 count = 0

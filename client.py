@@ -5,7 +5,7 @@ import socketio
 import I2C_LCD_driver
 import al
 import i2c
-import read_temp_double
+# import read_temp_double
 
 lcdi2c1 = I2C_LCD_driver.lcd(0x23)
 lcdi2c2 = I2C_LCD_driver.lcd(0x27)
@@ -36,17 +36,17 @@ slave2_addr = 0xE
 
 
 def set_lcd_info():
-    temp = read_temp_double.read_temp()
-    tem_aqua1 = str(temp[0])
-    tem_aqua2 = str(temp[1])
+    # temp = read_temp_double.read_temp()
+    # tem_aqua1 = str(temp[1])
+    # tem_aqua2 = str(temp[0])
 
     lcdi2c1.lcd_clear()
     lcdi2c1.lcd_display_string(AQUARIO_1, 1, 0)
-    lcdi2c1.lcd_display_string(tem_aqua1, 2, 0)
+    # lcdi2c1.lcd_display_string(tem_aqua1, 2, 0)
 
     lcdi2c2.lcd_clear()
     lcdi2c2.lcd_display_string(AQUARIO_2, 1, 0)
-    lcdi2c2.lcd_display_string(tem_aqua2, 2, 0)
+    # lcdi2c2.lcd_display_string(tem_aqua2, 2, 0)
 
 
 use_connection()
@@ -87,11 +87,11 @@ def feed_fishes(data):
 @sio.on('REQUEST_SWAP_WATER', namespace='/aquarium')
 def swap_water(data):
     if(AQUARIO_1 == data['aquarium']):
-        queue.enqueue(i2c.change_water, args=[slave_addr], timeout=600)
+        queue.enqueue_call(func=i2c.change_water, args=(slave_addr,), timeout=900)
         print('SWAPPING WATER AQUARIO 1')
 
     elif(AQUARIO_2 == data['aquarium']):
-        queue.enqueue(i2c.change_water, args=[slave2_addr], timeout=600)
+        queue.enqueue_call(func=i2c.change_water, args=(slave2_addr,), timeout=900)
         print('SWAPPING WATER AQUARIO 2')
 
 
