@@ -87,11 +87,13 @@ def feed_fishes(data):
 @sio.on('REQUEST_SWAP_WATER', namespace='/aquarium')
 def swap_water(data):
     if(AQUARIO_1 == data['aquarium']):
-        queue.enqueue_call(func=i2c.change_water, args=(slave_addr,), timeout=900)
+        queue.enqueue_call(func=i2c.change_water,
+                           args=(slave_addr,), timeout=900)
         print('SWAPPING WATER AQUARIO 1')
 
     elif(AQUARIO_2 == data['aquarium']):
-        queue.enqueue_call(func=i2c.change_water, args=(slave2_addr,), timeout=900)
+        queue.enqueue_call(func=i2c.change_water,
+                           args=(slave2_addr,), timeout=900)
         print('SWAPPING WATER AQUARIO 2')
 
 

@@ -56,7 +56,7 @@ def monitoring(slave_addr, aquarium, RESPONSE):
 
     # temp = read_temp_double.read_temp()
     # response[INPUT[1]] = float(str(temp[aquarium]))
-    
+
     response[INPUT[1]] = 25.5
 
     bus.close()
@@ -74,7 +74,7 @@ def monitoring(slave_addr, aquarium, RESPONSE):
         sio.emit('RESPOND_REPORT', RESPONSE, namespace='/monitoring')
         print('Enviou: ', RESPONSE)
         sio.disconnect()
-    
+
     sio.wait()
 
 
@@ -95,7 +95,7 @@ def change_water(slave_addr):
     sleep(0.5)
 
     if(response == 10):
-        #payload = 3
+        # payload = 3
 
         bus.write_byte(slave_addr, payload)
         sleep(0.5)
@@ -105,12 +105,12 @@ def change_water(slave_addr):
         count = 0
         while(count < 10):
             try:
-				bus.write_byte(slave_addr, payload)
-				sleep(0.5)
-				other_response = bus.read_byte(slave_addr)
+                bus.write_byte(slave_addr, payload)
+                sleep(0.5)
+                other_response = bus.read_byte(slave_addr)
             except:
-				other_response = 0
-            
+                other_response = 0
+
             print(other_response, ' - ', count)
             sleep(0.5)
 
@@ -133,13 +133,13 @@ def change_water(slave_addr):
 
         count = 0
         while(count < 10):
-			try:
-				bus.write_byte(slave_addr, payload)
-				sleep(0.5)
-				other_response = bus.read_byte(slave_addr)
+            try:
+                bus.write_byte(slave_addr, payload)
+                sleep(0.5)
+                other_response = bus.read_byte(slave_addr)
             except:
-				other_response = 0
-            
+                other_response = 0
+
             print(other_response, ' - ', count)
             sleep(0.5)
 
@@ -157,4 +157,3 @@ def change_water(slave_addr):
     bus.close()
 
 # change_water(0xf)
-
