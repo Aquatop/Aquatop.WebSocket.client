@@ -104,9 +104,13 @@ def change_water(slave_addr):
 
         count = 0
         while(count < 10):
-            bus.write_byte(slave_addr, payload)
-            sleep(0.5)
-            other_response = bus.read_byte(slave_addr)
+            try:
+				bus.write_byte(slave_addr, payload)
+				sleep(0.5)
+				other_response = bus.read_byte(slave_addr)
+            except:
+				other_response = 0
+            
             print(other_response, ' - ', count)
             sleep(0.5)
 
@@ -129,9 +133,13 @@ def change_water(slave_addr):
 
         count = 0
         while(count < 10):
-            bus.write_byte(slave_addr, payload)
-            sleep(0.5)
-            other_response = bus.read_byte(slave_addr)
+			try:
+				bus.write_byte(slave_addr, payload)
+				sleep(0.5)
+				other_response = bus.read_byte(slave_addr)
+            except:
+				other_response = 0
+            
             print(other_response, ' - ', count)
             sleep(0.5)
 
