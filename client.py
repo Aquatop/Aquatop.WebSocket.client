@@ -5,7 +5,7 @@ import socketio
 import I2C_LCD_driver
 import al
 import i2c
-# import read_temp_double
+import read_temp_double
 
 lcdi2c1 = I2C_LCD_driver.lcd(0x23)
 lcdi2c2 = I2C_LCD_driver.lcd(0x27)
@@ -36,17 +36,17 @@ slave2_addr = 0xE
 
 
 def set_lcd_info():
-    # temp = read_temp_double.read_temp()
-    # tem_aqua1 = str(temp[1])
-    # tem_aqua2 = str(temp[0])
+    temp = read_temp_double.read_temp()
+    tem_aqua1 = str(temp[1])
+    tem_aqua2 = str(temp[0])
 
     lcdi2c1.lcd_clear()
     lcdi2c1.lcd_display_string(AQUARIO_1, 1, 0)
-    # lcdi2c1.lcd_display_string(tem_aqua1, 2, 0)
+    lcdi2c1.lcd_display_string(tem_aqua1, 2, 0)
 
     lcdi2c2.lcd_clear()
     lcdi2c2.lcd_display_string(AQUARIO_2, 1, 0)
-    # lcdi2c2.lcd_display_string(tem_aqua2, 2, 0)
+    lcdi2c2.lcd_display_string(tem_aqua2, 2, 0)
 
 
 use_connection()
