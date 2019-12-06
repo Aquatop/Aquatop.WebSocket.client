@@ -7,6 +7,8 @@ import al
 import i2c
 import read_temp_double
 import threading
+import wiringpi
+
 
 
 lcdi2c1 = I2C_LCD_driver.lcd(0x23)
@@ -183,7 +185,7 @@ def respond_report(data):
         queue.enqueue(i2c.monitoring, slave2_addr, 1, RESPONSE2)
         set_lcd_info()
         fluxo()
-        
+
 
 @sio.event
 def disconnect():
