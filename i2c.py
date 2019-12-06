@@ -54,7 +54,7 @@ def monitoring(slave_addr, aquarium, RESPONSE):
         sleep(0.1)
 
     temp = read_temp_double.read_temp()
-    response[INPUT[1]] = round(float(str(temp[aquarium])), 1)
+    response[INPUT[1]] = round(float(str(temp[0])), 1)
 
     response[INPUT[2]] = round(response[INPUT[2]] * 0.466, 1)
 

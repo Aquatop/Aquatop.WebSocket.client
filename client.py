@@ -38,7 +38,7 @@ slave2_addr = 0xE
 def set_lcd_info():
     temp = read_temp_double.read_temp()
     tem_aqua1 = 'Temp: ' + str(round(float(str(temp[0])), 1)) + 'C'
-    tem_aqua2 = 'Temp: ' + str(round(float(str(temp[1])), 1)) + 'C'
+    tem_aqua2 = 'Temp: ' + str(round(float(str(temp[0])), 1)) + 'C'
 
     lcdi2c1.lcd_clear()
     lcdi2c1.lcd_display_string(AQUARIO_1, 1, 0)
