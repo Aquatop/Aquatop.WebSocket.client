@@ -6,6 +6,8 @@ import I2C_LCD_driver
 import al
 import i2c
 import read_temp_double
+import threading
+
 
 lcdi2c1 = I2C_LCD_driver.lcd(0x23)
 lcdi2c2 = I2C_LCD_driver.lcd(0x27)
@@ -175,10 +177,13 @@ def respond_report(data):
     if(AQUARIO_1 == data['aquarium']):
         queue.enqueue(i2c.monitoring, slave_addr, 0, RESPONSE)
         set_lcd_info()
+        fluxo()
 
     elif(AQUARIO_2 == data['aquarium']):
         queue.enqueue(i2c.monitoring, slave2_addr, 1, RESPONSE2)
         set_lcd_info()
+        fluxo()
+        
 
 @sio.event
 def disconnect():
@@ -198,7 +203,6 @@ def fluxo():
     fluxoFiltro2 = wiringpi.digitalRead(11)
     if (fluxoFiltro1 != 1 or fluxoFiltro2 != 1):
         wiringpi.digitalWrite(12,1)
-
 
 
 sio.wait()
