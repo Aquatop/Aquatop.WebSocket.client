@@ -1,7 +1,7 @@
 import wiringpi
 from smbus2 import SMBus
 from time import sleep
-# import read_temp_double
+import read_temp_double
 import socketio
 
 LED = 5
@@ -23,7 +23,6 @@ def returnAngle(pot, slaveAddr):
     response = 0
     bus = SMBus(1)
     bus.write_byte(slaveAddr, pot)
-    print('Alice usando lolo - ', pot)
     sleep(0.2)
     response = bus.read_byte(slaveAddr)
     print(response)
@@ -54,10 +53,14 @@ def monitoring(slave_addr, aquarium, RESPONSE):
         response[INPUT[i]] = bus.read_byte(slave_addr)
         sleep(0.1)
 
-    # temp = read_temp_double.read_temp()
-    # response[INPUT[1]] = float(str(temp[aquarium]))
+    temp = read_temp_double.read_temp()
+    response[INPUT[1]] = round(float(str(temp[aquarium])), 1)
 
-    response[INPUT[1]] = 25.5
+    response[INPUT[2]] = response[INPUT[2]] * 0.466
+
+    response[INPUT[3]] = ((40 - (response[INPUT[3]] - 4)) / 40) * 100 
+    
+    # response[INPUT[1]] = 25.5
 
     bus.close()
 
@@ -103,7 +106,7 @@ def change_water(slave_addr):
         sleep(0.5)
 
         count = 0
-        while(count < 10):
+        while(count < 5):
             try:
                 bus.write_byte(slave_addr, payload)
                 sleep(0.5)
@@ -117,7 +120,8 @@ def change_water(slave_addr):
             if(other_response > 17):
                 count += 1
             else:
-                count = 0
+                if(other_response != 0):
+                    count = 0
 
         payload = 10
 
@@ -132,7 +136,7 @@ def change_water(slave_addr):
         other_response = bus.read_byte(slave_addr)
 
         count = 0
-        while(count < 10):
+        while(count < 5):
             try:
                 bus.write_byte(slave_addr, payload)
                 sleep(0.5)
@@ -146,7 +150,8 @@ def change_water(slave_addr):
             if(other_response < 17):
                 count += 1
             else:
-                count = 0
+                if(other_response != 0):
+                    count = 0
 
         payload = 11
         wiringpi.digitalWrite(bomba2, 1)
