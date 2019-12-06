@@ -189,4 +189,15 @@ sio.connect('http://104.248.58.252:80', socketio_path='/websocket-server',
 
 set_lcd_info()
 
+def fluxo():
+    wiringpi.wiringPiSetup()
+    wiringpi.pinMode(10, wiringpi.INPUT)
+    wiringpi.pinMode(11, wiringpi.INPUT)
+    fluxoFiltro1 = wiringpi.digitalRead(10)
+    fluxoFiltro2 = wiringpi.digitalRead(11)
+    if (fluxoFiltro1 != 1 or fluxoFiltro2 != 1):
+        wiringpi.digitalWrite(12,1)
+
+
+
 sio.wait()
