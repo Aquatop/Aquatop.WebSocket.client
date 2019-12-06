@@ -37,8 +37,8 @@ slave2_addr = 0xE
 
 def set_lcd_info():
     temp = read_temp_double.read_temp()
-    tem_aqua1 = str(round(float(str(temp[0])), 1))
-    tem_aqua2 = str(round(float(str(temp[1])), 1))
+    tem_aqua1 = 'Temp: ' + str(round(float(str(temp[0])), 1)) + 'C'
+    tem_aqua2 = 'Temp: ' + str(round(float(str(temp[1])), 1)) + 'C'
 
     lcdi2c1.lcd_clear()
     lcdi2c1.lcd_display_string(AQUARIO_1, 1, 0)
@@ -174,10 +174,11 @@ def respond_report(data):
     print('Monitoramento solicitado')
     if(AQUARIO_1 == data['aquarium']):
         queue.enqueue(i2c.monitoring, slave_addr, 0, RESPONSE)
+        set_lcd_info()
 
     elif(AQUARIO_2 == data['aquarium']):
         queue.enqueue(i2c.monitoring, slave2_addr, 1, RESPONSE2)
-
+        set_lcd_info()
 
 @sio.event
 def disconnect():

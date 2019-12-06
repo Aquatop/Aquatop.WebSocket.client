@@ -56,7 +56,7 @@ def monitoring(slave_addr, aquarium, RESPONSE):
     temp = read_temp_double.read_temp()
     response[INPUT[1]] = round(float(str(temp[aquarium])), 1)
 
-    response[INPUT[2]] = response[INPUT[2]] * 0.466
+    response[INPUT[2]] = round(response[INPUT[2]] * 0.466, 1)
 
     response[INPUT[3]] = ((40 - (response[INPUT[3]] - 4)) / 40) * 100 
     
@@ -150,7 +150,7 @@ def change_water(slave_addr):
             if(other_response < 17):
                 count += 1
             else:
-                if(other_response != 0):
+                if(other_response == 0):
                     count = 0
 
         payload = 11
