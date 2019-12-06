@@ -148,10 +148,10 @@ def change_water(slave_addr):
             sleep(0.5)
 
             if(other_response < 17):
-                count += 1
-            else:
-                if(other_response == 0):
-                    count = 0
+                if(other_response != 0):
+                    count += 1
+            else:        
+                count = 0
 
         payload = 11
         wiringpi.digitalWrite(bomba2, 1)
